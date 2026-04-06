@@ -1,6 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
-import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import { Construct } from 'constructs';
@@ -15,10 +14,10 @@ export interface DjangoFargateServiceProps {
   readonly awsRegion: string;
   readonly subnets: string[];
   readonly serviceSecurityGroupId: string;
-  readonly targetGroup: elbv2.CfnTargetGroup;
-  readonly httpListener: elbv2.CfnListener;
   readonly containerName: string;
   readonly containerPort: number;
+  /** Extra container env vars (e.g. Bedrock IDs). */
+  readonly additionalEnvironment?: Array<{ name: string; value: string }>;
 }
 
 /**
@@ -81,6 +80,7 @@ export class DjangoFargateService extends Construct {
             { name: 'DJANGO_ALLOWED_HOSTS', value: parameters.djangoAllowedHosts.valueAsString },
             { name: 'DJANGO_SECRET_KEY', value: parameters.djangoSecretKey.valueAsString },
             { name: 'DJANGO_DEBUG', value: 'false' },
+            ...(props.additionalEnvironment ?? []),
           ],
           logConfiguration: {
             logDriver: 'awslogs',
@@ -109,15 +109,7 @@ export class DjangoFargateService extends Construct {
           securityGroups: [props.serviceSecurityGroupId],
         },
       },
-      loadBalancers: [
-        {
-          containerName: props.containerName,
-          containerPort: props.containerPort,
-          targetGroupArn: props.targetGroup.ref,
-        },
-      ],
     });
     this.service.overrideLogicalId('Service');
-    this.service.addDependency(props.httpListener);
   }
 }

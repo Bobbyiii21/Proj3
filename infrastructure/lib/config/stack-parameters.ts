@@ -27,12 +27,13 @@ export function defineChefplusplusStackParameters(stack: Stack): ChefplusplusSta
 
     vpcId: new cdk.CfnParameter(stack, 'VpcId', {
       type: 'AWS::EC2::VPC::Id',
-      description: 'VPC where the load balancer and tasks run.',
+      description: 'VPC where Fargate tasks and security groups are created.',
     }),
 
     publicSubnetIds: new cdk.CfnParameter(stack, 'PublicSubnetIds', {
       type: 'CommaDelimitedList',
-      description: 'At least two subnet IDs in different Availability Zones (required for the ALB).',
+      description:
+        'Public subnet ID(s) with a route to an internet gateway. One subnet is enough; use two only if you want tasks spread across AZs.',
     }),
 
     desiredCount: new cdk.CfnParameter(stack, 'DesiredCount', {
@@ -59,7 +60,7 @@ export function defineChefplusplusStackParameters(stack: Stack): ChefplusplusSta
       type: 'String',
       default: '*',
       description:
-        'Comma-separated Host headers Django accepts. Use the ALB DNS name or * for class demos.',
+        'Comma-separated Host headers Django accepts. Use * for demos, or the task public IP if you restrict hosts.',
     }),
 
     djangoSecretKey: new cdk.CfnParameter(stack, 'DjangoSecretKey', {
