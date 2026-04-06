@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<!--<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">-->
+
+
+<div class="p-3 mt-4">
+  <div class="container">
+    <div class="row justify-content-center">
+        <h3>Files</h3>
+        <hr>
+        {% for file in template_data.files %}
+        <div class="card">
+            <p>Name: {{ file.name }}</p>
+            <p>Description: {{ file.description }}</p>
+            <p>Upload Info: {{ file.date_added }} by {{ file.uploader }}</p>
+            <p><a href="{{ file.file.url }}" download><h4 class="profile-section-header">Download Link</h4></a></p>
+        </div>
+        {% endfor %}
+        <button type="button" class="profile-edit-btn" data-bs-toggle="modal" data-bs-target="#addFileModal">Add</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal fade" id="addFileModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addFileModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3" style="display:none;">
+          <textarea class="form-control" name="subfield">file_add</textarea>
+          <input type="hidden" name="id" id="edit-experience-id" value="">
+        </div>
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editExperienceModalLabel"><strong>Add File</strong></h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="edit-name" class="form-label">Name*</label>
+            <textarea class="form-control" id="edit-name" name="name" rows="2" maxlength="255" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="edit-description" class="form-label">Description</label>
+            <textarea class="form-control" id="edit-description" name="description" rows="5" maxlength="1023"></textarea>
+          </div>
+          <div class="mb-3">
+            <input type="file" name="file_upload" required/>
+            <label for="file_upload" class="btn">Upload File</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="secondary-hover-btn" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="primary-hover-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
