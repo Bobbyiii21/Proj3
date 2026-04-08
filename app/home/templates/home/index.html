@@ -1,17 +1,141 @@
 {% extends 'base.html' %}
 {% block content %}
-{% load static %}
 
-<!--<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cal+Sans&display=swap" rel="stylesheet">-->
+<div class="page-shell">
 
-  <header class="masthead homepage-banner py-4">
-    <div class="container flex-column">
-      <p class="banner-text"><em>Phood</em></p>
-      <p><a href="{% url 'accounts.register' %}">Register</a></p>
-      <p><a href="{% url 'accounts.login' %}">Login</a></p>
-      <p><a href="{% url 'developer.index' %}">Developer Database Access</a></p>
+<aside class="sidebar-column">
+  <div class="sidebar-panel p-4 rounded-4 shadow-sm">
+    <div class="sidebar-header mb-4">
+      <span class="eyebrow">Quick access</span>
+      <h5 class="mb-0">Actions</h5>
     </div>
-  </header>
+    <div class="d-grid gap-3">
+      <a class="btn btn-outline-dark btn-lg text-start" href="#chat"><i class="fas fa-comments me-2"></i>Chat access</a>
+      <a class="btn btn-outline-dark btn-lg text-start" href="{% url 'developer.index' %}"><i class="fas fa-code me-2"></i>Developer access</a>
+    </div>
+    <div class="mt-4">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle w-100" type="button" id="accountActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          Account actions
+        </button>
+        <ul class="dropdown-menu w-100" aria-labelledby="accountActionDropdown">
+          {% if request.user.is_authenticated %}
+          <li><a class="dropdown-item" href="{% url 'accounts.logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+          {% else %}
+          <li><a class="dropdown-item" href="{% url 'accounts.login' %}"><i class="fas fa-sign-in-alt me-2"></i>Login</a></li>
+          <li><a class="dropdown-item" href="{% url 'accounts.register' %}"><i class="fas fa-user-plus me-2"></i>Register</a></li>
+          {% endif %}
+          <li><hr class="dropdown-divider"></li>
+          <li><button class="dropdown-item theme-toggle-btn" id="themeToggleButton" type="button"><i class="fas fa-adjust me-2"></i>Toggle theme</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<div class="main-content">
+  <section class="homepage-hero py-5 ps-4 ps-lg-5">
+    <div class="container">
+      <div class="row align-items-center gy-4">
+        <div class="col-lg-6">
+          <span class="eyebrow">Nutrition support for every meal</span>
+          <h1>Ask your nutrition assistant. Get answers from your own knowledge.</h1>
+          <p class="lead">ChefPlusPlus combines personalized meal guidance with a retrieval-augmented chatbot so you can chat about recipes, nutrition, and healthy choices.</p>
+          <div class="hero-buttons mt-4">
+            <a class="btn btn-primary btn-lg me-3" href="{% url 'accounts.register' %}">Get started</a>
+            <a class="btn btn-outline-dark btn-lg" href="{% url 'accounts.login' %}">Login</a>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="hero-panel p-4 shadow-sm rounded-4 bg-white">
+            <h2>Why ChefPlusPlus?</h2>
+            <ul class="hero-list list-unstyled mt-3 mb-0">
+              <li><i class="fas fa-check-circle"></i> Meal recommendations based on goals</li>
+              <li><i class="fas fa-brain"></i> Answers powered by your nutrition data</li>
+              <li><i class="fas fa-book"></i> RAG chatbot that retrieves trusted knowledge instantly</li>
+            </ul>
+            <div class="mt-4">
+              <a class="text-decoration-none" href="{% url 'home.about' %}">Learn more about our approach <i class="fas fa-arrow-right ms-2"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="homepage-features py-5 bg-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow">Features</span>
+      <h2>Nutrition guidance with AI-powered context</h2>
+      <p class="text-muted mx-auto" style="max-width: 680px;">ChefPlusPlus uses retrieval-augmented generation to bring your recipes, nutrition facts, and meal plans together in one helpful assistant.</p>
+    </div>
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <div class="feature-card p-4 rounded-4 h-100">
+          <div class="feature-icon mb-3"><i class="fas fa-apple-alt"></i></div>
+          <h3>Smart meal guidance</h3>
+          <p>Get food suggestions and portion ideas built around your wellness goals, activity, and preferences.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card p-4 rounded-4 h-100">
+          <div class="feature-icon mb-3"><i class="fas fa-balance-scale"></i></div>
+          <h3>Nutrition insights</h3>
+          <p>See calories, macros, and vitamins at a glance so you can make informed choices every day.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-card p-4 rounded-4 h-100">
+          <div class="feature-icon mb-3"><i class="fas fa-robot"></i></div>
+          <h3>RAG-powered chatbot</h3>
+          <p>Ask questions and receive nutritional answers sourced from your own recipe and ingredient data.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="homepage-process py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="eyebrow">How it works</span>
+      <h2>Ask, retrieve, and act on better nutrition advice</h2>
+    </div>
+    <div class="row gy-4">
+      <div class="col-md-4">
+        <div class="process-step p-4 rounded-4 h-100">
+          <div class="step-number">1</div>
+          <h3>Share your context</h3>
+          <p>Tell the assistant what you care about: meal goals, favorite ingredients, dietary preferences, or recipe questions.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="process-step p-4 rounded-4 h-100">
+          <div class="step-number">2</div>
+          <h3>Retrieve relevant nutrition data</h3>
+          <p>The chatbot searches your knowledge base and sources the most relevant information for accurate, timely answers.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="process-step p-4 rounded-4 h-100">
+          <div class="step-number">3</div>
+          <h3>Get usable guidance</h3>
+          <p>Receive meal ideas, nutrient summaries, and practical tips that help you build healthier eating habits.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="homepage-cta py-5 bg-primary text-white">
+    <div class="container text-center">
+      <h2>Ready to chat your way to better nutrition?</h2>
+      <p class="mb-4">Start using the RAG-powered nutrition assistant and get smarter meal guidance today.</p>
+      <a class="btn btn-light btn-lg" href="{% url 'accounts.register' %}">Create your account</a>
+    </div>
+  </section>
+</div>
+</div>
+
 {% endblock content %}

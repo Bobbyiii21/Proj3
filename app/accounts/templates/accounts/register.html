@@ -1,26 +1,33 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-<div class="p-3 mt-4">
+
+<section class="auth-hero py-5">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow p-3 mb-4 rounded">
-          <div class="card-body">
-            <h2>Sign Up</h2>
-            <hr />
-            <form method="POST">
-              {% csrf_token %}
-              {{ template_data.form.as_p }}
-              <div class="d-flex justify-content-between align-items-center">
-                <button type="submit"class="primary-hover-btn">Sign Up</button>
-                <a class="secondary-hover-btn" href="{% url 'accounts.login' %}">Existing User?</a>
-              </div>
-            </form>
+      <div class="col-md-6">
+        <div class="auth-panel p-4 shadow-sm rounded-4 bg-white">
+          <div class="text-center mb-4">
+            <span class="eyebrow">Get started</span>
+            <h2>Join your nutrition assistant</h2>
+            <p class="text-muted">Create an account to access personalized meal guidance and RAG-powered nutrition chat</p>
+          </div>
+
+          <form method="POST">
+            {% csrf_token %}
+            {{ template_data.form.as_p }}
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary btn-lg rounded-3">Create account</button>
+            </div>
+          </form>
+
+          <div class="text-center mt-4">
+            <p class="mb-0">Already have an account? <a href="{% url 'accounts.login' %}" class="text-decoration-none">Sign in</a></p>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
+
 {% endblock content %}

@@ -15,6 +15,8 @@
   </head>
 
   <body>
+
+
     {% block content %}
     {% endblock content %}
 
@@ -58,5 +60,27 @@
       </div>
     </section>
     <!-- Footer -->
+  <script>
+    (function() {
+      const root = document.documentElement;
+      const storedTheme = localStorage.getItem('theme');
+      const initialTheme = storedTheme === 'dark' ? 'dark' : 'light';
+      root.dataset.theme = initialTheme;
+      const themeBtn = document.getElementById('themeToggleButton');
+      function updateLabel(theme) {
+        if (!themeBtn) return;
+        themeBtn.textContent = theme === 'dark' ? 'Switch to light' : 'Switch to dark';
+      }
+      updateLabel(initialTheme);
+      if (themeBtn) {
+        themeBtn.addEventListener('click', function() {
+          const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+          root.dataset.theme = nextTheme;
+          localStorage.setItem('theme', nextTheme);
+          updateLabel(nextTheme);
+        });
+      }
+    })();
+  </script>
   </body>
 </html>

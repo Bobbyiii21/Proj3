@@ -1,43 +1,53 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="p-3 mt-4">
+
+<section class="auth-hero py-5">
   <div class="container">
     <div class="row justify-content-center">
-      <div class="col-md-8">
-        <div class="card shadow p-3 mb-4 rounded">
-          <div class="card-body">
-            <h2>Login</h2>
-            <hr />
-            {% if template_data.error %}
-            <div class="alert alert-danger" role="alert">
-              {{ template_data.error }}
+      <div class="col-md-6">
+        <div class="auth-panel p-4 shadow-sm rounded-4 bg-white">
+          <div class="text-center mb-4">
+            <span class="eyebrow">Welcome back</span>
+            <h2>Sign in to your nutrition assistant</h2>
+            <p class="text-muted">Access your personalized meal guidance and RAG chatbot</p>
+          </div>
+
+          {% if template_data.error %}
+          <div class="alert alert-danger rounded-3" role="alert">
+            {{ template_data.error }}
+          </div>
+          {% endif %}
+
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input id="email" type="email"
+                     name="email" required
+                     autocomplete="email"
+                     class="form-control form-control-lg rounded-3"
+                     placeholder="Enter your email">
             </div>
-            {% endif %}
-            <form method="POST">
-              {% csrf_token %}
-              <p>
-                <label for="email">Email</label>
-                <input id="email" type="text"
-                       name="email" required
-                       autocomplete="email"
-                       class="form-control">
-              </p>
-              <p>
-                <label for="password">Password</label>
-                <input id="password" type="password"
-                       name="password" required
-                       autocomplete="current-password"
-                       class="form-control">
-              </p>
-              <div class="d-flex justify-content-between align-items-center">
-                <button type="submit" class="primary-hover-btn">Login</button>
-                <a class="secondary-hover-btn" href="{% url 'accounts.register' %}">New User?</a>
-              </div>
-            </form>
+            <div class="mb-4">
+              <label for="password" class="form-label">Password</label>
+              <input id="password" type="password"
+                     name="password" required
+                     autocomplete="current-password"
+                     class="form-control form-control-lg rounded-3"
+                     placeholder="Enter your password">
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg rounded-3">Sign in</button>
+            </div>
+          </form>
+
+          <div class="text-center mt-4">
+            <p class="mb-0">New to ChefPlusPlus? <a href="{% url 'accounts.register' %}" class="text-decoration-none">Create an account</a></p>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
+
 {% endblock content %}
