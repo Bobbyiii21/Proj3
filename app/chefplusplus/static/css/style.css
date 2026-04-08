@@ -1,34 +1,57 @@
+/* ============================================================
+   style.css — Global site styles for Chef++
+   Load this on every page via base.html
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap');
+
+/* --- Design tokens --- */
 :root {
-  --text-: #ffffff;
-
-  --background: #010104;
-
-  --primary-light: #91b69a;
-
-  --primary: #548060;
-  --bs-primary: #548060;
-
-  --primary-dark: #324c39;
-
-  --secondary: #0f1d0c;
-  --secondary-light: #596e55;
-
-  --accent: #c7a07b;
-  --accent-light: #ffd79e;
-  --accent-dark: #946847;
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --border: #2e2e2e;
+  --text: #e8e8e8;
+  --text-muted: #666;
+  --accent: #d4a853;
 }
 
-:root[data-theme="light"] {
-  --text: #2b2b2b;
-  --background: #ffede7;
-  --primary: #ffc8a8;
-  --secondary: #fc9ad0;
-  --accent: #ffe5b3;
+/* --- Reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
-:root[data-theme="dark"] {
-  --text: #fffded;
-  --background: #212121;
-  --primary: #ffb682;
-  --secondary: #ffb9ed;
-  --accent: #ffdfa4;
+
+/* --- Base --- */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-weight: 300;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+a:hover {
+  color: var(--text);
+}
+
+/* --- Utility: monospace --- */
+.mono {
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+/* --- Utility: muted text --- */
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* --- Utility: accent --- */
+.text-accent {
+  color: var(--accent);
 }
