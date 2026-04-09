@@ -1,13 +1,12 @@
 // Theme handler
 
 const root = document.documentElement;
-const btn = document.getElementById('themeToggle');
-const icon = document.getElementById('themeIcon');
 const saved = localStorage.getItem('theme') || 'light';
+root.setAttribute('data-theme', saved);
 
 window.onload = function () {
-    root.setAttribute('data-theme', saved);
-    icon.textContent = (saved === 'dark') ? 'light_mode' : 'dark_mode';
+    const icon = document.getElementById('themeIcon');
+    if (icon) icon.textContent = (saved === 'dark') ? 'light_mode' : 'dark_mode';
 };
 
 function changeTheme() {
