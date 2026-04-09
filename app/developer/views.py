@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from accounts.models import CPPUser
 from .models import DatabaseFile
+from tools.gcs_storage import upload_file as gcs_upload_file
 
 
 def allowed_visitor(user: CPPUser):
@@ -30,6 +31,7 @@ def database_files(request):
             new_file.file = request.FILES['file_upload']
             new_file.uploader = request.user
             new_file.save()
+            gcs_upload_file(request.FILES['file_upload'])
 
     template_data = {}
     template_data['title'] = 'Database'
