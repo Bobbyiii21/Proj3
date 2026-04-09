@@ -4,6 +4,7 @@ const messagesWrap = document.getElementById('messagesWrap');
 const emptyState = document.getElementById('emptyState');
 
 const conversationHistory = [];
+let waiting = false;
 
 marked.setOptions({
   breaks: true,
@@ -62,13 +63,15 @@ function appendMessage(role, content, isTyping = false) {
 
 async function sendMessage() {
   const text = input.value.trim();
-  if (!text) return;
+  if (!text || waiting) return;
+
+  waiting = true;
+  sendBtn.disabled = true;
 
   appendMessage('user', text);
 
   input.value = '';
   input.style.height = 'auto';
-  sendBtn.disabled = true;
 
   const typingMsg = appendMessage('assistant', '', true);
 
@@ -95,5 +98,8 @@ async function sendMessage() {
   } catch (err) {
     typingMsg.remove();
     appendMessage('assistant', 'Network error — please try again.');
+  } finally {
+    waiting = false;
+    sendBtn.disabled = input.value.trim() === '';
   }
 }
