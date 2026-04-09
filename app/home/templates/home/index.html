@@ -1,59 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-{% load static %}
- 
-<link rel="stylesheet" href="{% static 'css/chat.css' %}">
- 
-<div class="chat-layout">
- 
-  <!-- Header -->
-  <header class="chat-header">
-    <span class="logo">Chef++</span>
-    <span class="subtitle">RAG Assistant</span>
-    <nav>
-      <a href="{% url 'accounts.register' %}">Register</a>
-      <a href="{% url 'accounts.login' %}">Login</a>
-      <a href="{% url 'developer.index' %}">Dev DB</a>
-    </nav>
-  </header>
- 
-  <!-- Messages -->
-  <div class="messages-wrap" id="messagesWrap">
- 
-    <div class="empty-state" id="emptyState">
-      <div class="big-icon">⌘</div>
-      <h2>Ask me anything</h2>
-      <p>I have access to your recipe and ingredient knowledge base.</p>
-      <div class="suggestions">
-        <button class="suggestion-chip" onclick="fillSuggestion(this)">What can I make with chicken?</button>
-        <button class="suggestion-chip" onclick="fillSuggestion(this)">Substitute for heavy cream</button>
-        <button class="suggestion-chip" onclick="fillSuggestion(this)">30-minute weeknight meals</button>
-        <button class="suggestion-chip" onclick="fillSuggestion(this)">High-protein breakfast ideas</button>
-      </div>
-    </div>
- 
-  </div>
- 
-  <!-- Input -->
-  <div class="input-area">
-    <div class="input-row">
-      <textarea
-        class="input-box"
-        id="chatInput"
-        placeholder="Ask about recipes, ingredients, techniques..."
-        rows="1"
-      ></textarea>
-      <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
-        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 13V3M8 3L3.5 7.5M8 3L12.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-    <div class="input-hint">Enter to send &nbsp;·&nbsp; Shift+Enter for new line</div>
-  </div>
- 
+
+<div class="container mt-5 text-center">
+  <h1>Welcome to Chef++</h1>
+  <p>Your AI-powered recipe and nutrition assistant.</p>
 </div>
- 
-<script src="{% static 'js/chat.js' %}"></script>
- 
+
 {% endblock content %}

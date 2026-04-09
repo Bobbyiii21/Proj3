@@ -15,18 +15,80 @@
   </head>
 
   <body>
+    {% block navbar %}
+    <nav class="navbar navbar-expand-lg" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home.index' %}">
+          Chef++
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home.chat' %}">Chat</a>
+            </li>
+            {% if not request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts.register' %}">Register</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts.login' %}">Login</a>
+              </li>
+            {% endif %}
+            {% if request.user.is_authenticated and request.user.is_developer or request.user.is_superuser %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'developer.index' %}">Dev Tools</a>
+              </li>
+            {% endif %}
+            {% if request.user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts.logout' %}">Log out</a>
+              </li>
+            {% endif %}
+            <li class="nav-item ms-lg-2">
+              <button id="themeToggle" class="btn btn-sm btn-outline-secondary border-0" aria-label="Toggle light/dark mode">
+                <span class="material-symbols-outlined" id="themeIcon" style="font-size:1.25rem;vertical-align:middle;">dark_mode</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const btn = document.getElementById('themeToggle');
+        const icon = document.getElementById('themeIcon');
+        const saved = localStorage.getItem('theme') || 'light';
+        root.setAttribute('data-theme', saved);
+        icon.textContent = saved === 'dark' ? 'light_mode' : 'dark_mode';
+        btn.addEventListener('click', function () {
+          const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          root.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+          icon.textContent = next === 'dark' ? 'light_mode' : 'dark_mode';
+        });
+      })();
+    </script>
+    {% endblock navbar %}
+
+    <main>
     {% block content %}
     {% endblock content %}
+    </main>
 
 
+    {% block footer %}
     <!-- Footer -->
     <section class="p-3 ms-footer d-none d-md-block">
       <div class="container">
-        <div class="row mt-3 text-white">
+        <div class="row mt-3 footer-text">
           <div class="col-md-6 col-lg-6 col-xl-6 mx-auto mb-4">
-            <b>ChefPlusPlus</b>
+            <b>Chef++</b>
             <hr />
-            <p>Welcome to ChefPlusPlus, we'll help you achieve all of your nutritional goals and enjoy phood again!</p>
+            <p>Welcome to Chef++, we'll help you achieve all of your nutritional goals and enjoy phood again!</p>
           </div>
           <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-4">
             <b>LINKS</b>
@@ -47,16 +109,17 @@
         </div>
       </div>
     </section>
-    <section class="ms-footer-bottom">
+    <section class="ms-footer-bottom pb-3">
       <div class="container d-flex justify-content-between">
-        <div class="me-5 text-white">
+        <div class="me-5 footer-text">
           <span>Designed by Xavier Evans, Luke Ferguson, Ellie Fiftal, Alex Smith, Bobby Stephens III, & Arsh Suri</span>
         </div>
-        <div class="text-white">
+        <div class="footer-text">
           <span>© Nobody - 2026</span>
         </div>
       </div>
     </section>
     <!-- Footer -->
+    {% endblock footer %}
   </body>
 </html>
