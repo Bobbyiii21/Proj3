@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import logging
 import threading
+import time
 from typing import Any, Optional
 
 import vertexai
@@ -81,6 +82,10 @@ Nutritional values are typically based on a standard 100g portion.
 Use this source to answer questions like: "How much protein is in chicken?" or "What's a good source of potassium?" or "Which foods are high in fiber?"
 
 ---
+
+### 3. User Imported Recipes and Food Data
+
+With the other documents in the RAG corpus, you can answer questions about the recipes and food data. Make sure to always reference the documents by name, not by file name or number.
 
 ## How to Respond to User Goals
 
@@ -258,6 +263,24 @@ def _build_contents(
     return contents
 
 
+_MAX_RETRIES = 3
+_RETRY_BACKOFF = (1.0, 3.0, 6.0)
+
+_RETRYABLE_CODES = (
+    429,   # RESOURCE_EXHAUSTED
+    400,   # FailedPrecondition (RAG quota)
+    503,   # UNAVAILABLE
+)
+
+
+def _is_retryable(exc: google_exceptions.GoogleAPIError) -> bool:
+    code = getattr(exc, "code", None) or getattr(exc, "grpc_status_code", None)
+    msg = str(exc).lower()
+    if code in _RETRYABLE_CODES:
+        return True
+    return "quota" in msg or "rate" in msg
+
+
 def run_chat(
     message: str,
     history: list[dict[str, Any]] | None = None,
@@ -265,32 +288,50 @@ def run_chat(
     """
     Send *message* (with optional multi-turn *history*) to Vertex Gemini.
 
+    Retries up to 3 times on transient quota / rate-limit errors.
     Returns ``{"reply": str, "error": str}``.
     """
     text = (message or "").strip()
     if not text:
         return {"reply": "", "error": "Message is required."}
 
-    try:
-        model = _get_model()
-        contents = _build_contents(history, text)
-        response = model.generate_content(contents)
-    except (ValueError, RuntimeError) as exc:
-        logger.exception("Configuration error")
-        return {"reply": "", "error": str(exc)}
-    except google_auth_exceptions.DefaultCredentialsError:
-        logger.warning("Application Default Credentials not found")
-        return {
-            "reply": "",
-            "error": (
-                "Google Application Default Credentials are not set. "
-                "Run: gcloud auth application-default login"
-            ),
-        }
-    except google_exceptions.GoogleAPIError as exc:
-        logger.exception("Vertex AI API error")
-        detail = getattr(exc, "message", None) or str(exc)
-        return {"reply": "", "error": f"AI service error: {detail}"}
+    model = _get_model()
+    contents = _build_contents(history, text)
+
+    last_exc: Exception | None = None
+    for attempt in range(_MAX_RETRIES + 1):
+        try:
+            response = model.generate_content(contents)
+            break
+        except (ValueError, RuntimeError) as exc:
+            logger.exception("Configuration error")
+            return {"reply": "", "error": str(exc)}
+        except google_auth_exceptions.DefaultCredentialsError:
+            logger.warning("Application Default Credentials not found")
+            return {
+                "reply": "",
+                "error": (
+                    "Google Application Default Credentials are not set. "
+                    "Run: gcloud auth application-default login"
+                ),
+            }
+        except google_exceptions.GoogleAPIError as exc:
+            last_exc = exc
+            if attempt < _MAX_RETRIES and _is_retryable(exc):
+                wait = _RETRY_BACKOFF[attempt]
+                logger.warning(
+                    "Retryable Vertex AI error (attempt %d/%d), "
+                    "retrying in %.1fs: %s",
+                    attempt + 1, _MAX_RETRIES, wait, exc,
+                )
+                time.sleep(wait)
+                continue
+            logger.exception("Vertex AI API error")
+            detail = getattr(exc, "message", None) or str(exc)
+            return {"reply": "", "error": f"AI service error: {detail}"}
+    else:
+        detail = getattr(last_exc, "message", None) or str(last_exc)
+        return {"reply": "", "error": f"AI service error (after retries): {detail}"}
 
     if not response.candidates:
         return {
